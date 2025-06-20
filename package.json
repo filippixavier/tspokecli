@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest --run",
     "build": "npx tsc",
     "start": "node dist/main.js",
     "dev": "npx tsc && node dist/main.js"
@@ -16,5 +16,8 @@
     "@types/node": "^24.0.3",
     "typescript": "^5.8.3"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "vitest": "^3.2.4"
+  }
 }
