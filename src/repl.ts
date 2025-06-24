@@ -1,7 +1,5 @@
-import { createInterface } from "node:readline";
-import { stdin, stdout} from "node:process";
 import { getCommands } from "./commands/CLICommands.js";
-
+import { initState } from "./commands/state.js";
 const commands = getCommands()
 
 export function cleanInput(input: string):string[] {
@@ -13,21 +11,17 @@ export function cleanInput(input: string):string[] {
 }
 
 export function startREPL() {
-    const rl = createInterface({
-        input: stdin,
-        output: stdout,
-        prompt: "Pokedex > "
-    });
+    const state = initState();
 
-    rl.prompt();
+    state.rl.prompt();
 
-    rl.on("line", (input) => {
+    state.rl.on("line", (input: string) => {
         const cmd = input.split(' ')[0]
-        if (commands[cmd]) {
-            commands[cmd].callback();
+        if (state.commands[cmd]) {
+            state.commands[cmd].callback(state);
         } else {
             console.log("Command not found, use help to list command.")
         }
-        rl.prompt();
+        state.rl.prompt();
     })
 }
