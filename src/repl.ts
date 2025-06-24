@@ -1,5 +1,8 @@
 import { createInterface } from "node:readline";
 import { stdin, stdout} from "node:process";
+import { getCommands } from "./commands/CLICommands.js";
+
+const commands = getCommands()
 
 export function cleanInput(input: string):string[] {
     return input
@@ -19,9 +22,11 @@ export function startREPL() {
     rl.prompt();
 
     rl.on("line", (input) => {
-        const clean = cleanInput(input);
-        if (clean.length) {
-            console.log(`Your command was: ${clean[0]}`)
+        const cmd = input.split(' ')[0]
+        if (commands[cmd]) {
+            commands[cmd].callback();
+        } else {
+            console.log("Command not found, use help to list command.")
         }
         rl.prompt();
     })
