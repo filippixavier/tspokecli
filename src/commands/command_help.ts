@@ -1,9 +1,10 @@
 import { State } from "./state.js";
 
-export function commandHelp(state: State) {
+export async function commandHelp(state: State) {
     console.log(`Welcome to the Pokedex!
 Usage:
-
-help: Displays a help message
-exit: Exit the Pokedex`);
+`);
+    for(let man in state.commands) {
+        console.log(state.commands[man].description);
+    }
 }
