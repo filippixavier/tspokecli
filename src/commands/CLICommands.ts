@@ -2,12 +2,13 @@ import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.ts.js";
 import { commandMapBack } from "./command_mapb.js";
+import { commandExplore } from "./command_explore.js";
 import { State } from "./state.js";
 
 export type CLICommand = {
     name: string;
     description: string;
-    callback: (state: State) => Promise<void>;
+    callback: (state: State, ...args: any[]) => Promise<void>;
 }
 
 export function getCommands(): Record<string, CLICommand> {
@@ -31,6 +32,11 @@ export function getCommands(): Record<string, CLICommand> {
             name: 'mapb',
             description: 'Display the previous 20 locations',
             callback: commandMapBack
+        },
+        explore: {
+            name: 'explore <location name>',
+            description: 'Explore the given location and return all pokémons',
+            callback: commandExplore
         }
     }
 }

@@ -16,12 +16,15 @@ export function startREPL() {
     state.rl.prompt();
 
     state.rl.on("line", async (input: string) => {
-        const cmd = input.split(' ')[0]
+        const words = cleanInput(input);
+        const cmd = words[0];
+        const args = words.slice(1);
+
         if (state.commands[cmd]) {
             try {
-                await state.commands[cmd].callback(state);
+                await state.commands[cmd].callback(state, ...args);
             } catch(e) {
-                console.error(e)
+                console.log((e as Error).message)
             }
         } else {
             console.log("Command not found, use help to list command.")
