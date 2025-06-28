@@ -1,4 +1,6 @@
 import { Cache } from "./pokecache.js";
+import { type PokemonData } from "./pokemon_data.js";
+import { type LocationInfo } from "./pokemon_location.js";
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
@@ -56,6 +58,32 @@ export class PokeAPI {
       throw new Error(`Error fetching location: ${(e as Error).message}`);
     }
   }
+
+  async fetchPokemon(pokemon: string): Promise<PokemonData> {
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemon}`;
+
+    const entry = this.#cache.get<PokemonData>(url);
+
+    if (entry) {
+      return entry;
+    }
+
+    try {
+      const response = await fetch(url);
+
+      if(!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const json: PokemonData = await response.json();
+
+      this.#cache.add(url, json);
+
+      return json;
+    } catch (e) {
+      throw new Error(`Error fetching pokémon: ${(e as Error).message}`);
+    }
+  }
 }
 
 export type ShallowLocations = {
@@ -69,77 +97,3 @@ export type Location = {
   name: string,
   url: string
 };
-
-export type LocationInfo = {
-  encounter_method_rates: EncounterMethodRate[]
-  game_index: number
-  id: number
-  location: Location
-  name: string
-  names: Name[]
-  pokemon_encounters: PokemonEncounter[]
-}
-
-export type EncounterMethodRate = {
-  encounter_method: EncounterMethod
-  version_details: VersionDetail[]
-}
-
-export type EncounterMethod = {
-  name: string
-  url: string
-}
-
-export type VersionDetail = {
-  rate: number
-  version: Version
-}
-
-export type Version = {
-  name: string
-  url: string
-}
-
-export type Name = {
-  language: Language
-  name: string
-}
-
-export type Language = {
-  name: string
-  url: string
-}
-
-export type PokemonEncounter = {
-  pokemon: Pokemon
-  version_details: VersionDetail2[]
-}
-
-export type Pokemon = {
-  name: string
-  url: string
-}
-
-export type VersionDetail2 = {
-  encounter_details: EncounterDetail[]
-  max_chance: number
-  version: Version2
-}
-
-export type EncounterDetail = {
-  chance: number
-  condition_values: any[]
-  max_level: number
-  method: Method
-  min_level: number
-}
-
-export type Method = {
-  name: string
-  url: string
-}
-
-export type Version2 = {
-  name: string
-  url: string
-}
